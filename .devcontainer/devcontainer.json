@@ -19,7 +19,8 @@
 	"remoteUser": "vscode",
 	"features": {
 		"docker-from-docker": "latest",
-		"java": "lts"
+		"java": "lts",
+		"ghcr.io/devcontainers-contrib/features/sbt-sdkman:2": {}
 	},
 
 	"extensions": [
