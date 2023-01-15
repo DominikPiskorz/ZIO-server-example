@@ -28,5 +28,7 @@
 		"ms-azuretools.vscode-docker",
 		"scala-lang.scala",
 		"eamodio.gitlens"
-	]
+	],
+	// Init sbt and exit immediately
+	"postStartCommand": "sbt exit"
 }
