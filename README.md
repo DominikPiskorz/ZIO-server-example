@@ -1,9 +1,4 @@
-# Scala-Blank
-Empty scala project
+# ZIO Server Template
 
-`sbt compile`
-
-`sbt run`
-
-`sbt test`
+`docker-compose up`
 
