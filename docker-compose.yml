@@ -1,0 +1,22 @@
+version: "3.9"
+
+x-db-password: &db-password ${POSTGRES_PASSWORD:-db_password}
+x-db-user: &db-user ${POSTGRES_USER:-db_user}
+
+services:
+  postgres:
+    image: "postgres:15.1"
+    environment:
+      POSTGRES_PASSWORD: *db-password
+      POSTGRES_USER: *db-user
+    ports:
+      - "5432:5432"
+    restart: always
+
+  postgres_migrator:
+    depends_on:
+      - postgres
+    image: "flyway/flyway:9.14"
+    command: -url=jdbc:postgresql://postgres:5432/${POSTGRES_USER:-db_user} -user=${POSTGRES_USER:-db_user} -password=${POSTGRES_PASSWORD:-db_password} -connectRetries=60 migrate
+    volumes:
+      - "./migrations/:/flyway/sql"
