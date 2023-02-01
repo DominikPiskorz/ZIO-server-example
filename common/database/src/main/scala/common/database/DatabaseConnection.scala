@@ -8,7 +8,7 @@ object DatabaseConnection {
   def run() = println("DB running")
 
   val dataSource: RLayer[DbConfig, DataSource] =
-    ZLayer { 
+    ZLayer {
       for {
         conf <- ZIO.service[DbConfig]
       } yield {
@@ -23,5 +23,5 @@ object DatabaseConnection {
     }
 
   val layer: RLayer[DbConfig, Database] =
-      dataSource >>> Database.fromDatasource
+    dataSource >>> Database.fromDatasource
 }

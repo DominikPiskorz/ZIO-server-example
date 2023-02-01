@@ -3,13 +3,14 @@ package errors
 import io.circe._
 import io.circe.syntax._
 
-/**
-  * @param logMessage   Message logged in system logs
-  * @param userMessage  Message returned to end user
+/** @param logMessage
+  *   Message logged in system logs
+  * @param userMessage
+  *   Message returned to end user
   */
 abstract class ApiError(
     val userMessage: String,
-    val meta:       Map[String, String] = Map.empty
+    val meta: Map[String, String] = Map.empty
 ) extends Throwable {
   val logMessage: String = userMessage
 
@@ -26,9 +27,10 @@ object ApiError {
       actionDesc: String,
       override val userMessage: String = "Internal server error"
   ) extends ApiError(
-    userMessage
-  ) {
-    override val logMessage = s"Database error when performing action '$actionDesc': ${error.getMessage()}"
+        userMessage
+      ) {
+    override val logMessage =
+      s"Database error when performing action '$actionDesc': ${error.getMessage()}"
   }
 
   implicit def jsonDecoder[E <: ApiError]: Decoder[E] =

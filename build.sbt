@@ -1,7 +1,13 @@
 ThisBuild / scalaVersion := "2.13.10"
 
 lazy val root = (project in file("."))
-  .aggregate(api)
+  .aggregate(
+    api,
+    database,
+    transactionsRepository,
+    transactionsModel,
+    errors
+  )
 
 lazy val api = (project in file("api"))
   .enablePlugins(DockerPlugin, JavaAppPackaging)
@@ -11,15 +17,17 @@ lazy val api = (project in file("api"))
     errors
   )
   .settings(
-    addCompilerPlugin("org.typelevel" % "kind-projector" % "0.13.2" cross CrossVersion.full)
+    addCompilerPlugin(
+      "org.typelevel" % "kind-projector" % "0.13.2" cross CrossVersion.full
+    )
   )
   .settings(
-    libraryDependencies ++= 
+    libraryDependencies ++=
       Deps.test ++
-      Deps.cats ++
-      Deps.tapir ++
-      Deps.log ++
-      Deps.config
+        Deps.cats ++
+        Deps.tapir ++
+        Deps.log ++
+        Deps.config
   )
   .settings(
     dockerBaseImage := s"amazoncorretto:17",
@@ -36,17 +44,17 @@ lazy val api = (project in file("api"))
 
 lazy val database = (project in file("common/database"))
   .settings(
-    libraryDependencies ++= 
+    libraryDependencies ++=
       Deps.test ++
-      Deps.doobie ++
-      Deps.zio
+        Deps.doobie ++
+        Deps.zio
   )
 
 lazy val transactionsModel = (project in file("transactions/model"))
   .settings(
     libraryDependencies ++=
       Deps.test ++
-      Deps.circe
+        Deps.circe
   )
 
 lazy val transactionsRepository = (project in file("transactions/repository"))
@@ -57,13 +65,13 @@ lazy val transactionsRepository = (project in file("transactions/repository"))
   .settings(
     libraryDependencies ++=
       Deps.test ++
-      Deps.zio ++
-      Deps.doobie
+        Deps.zio ++
+        Deps.doobie
   )
 
 lazy val errors = (project in file("errors"))
   .settings(
     libraryDependencies ++=
       Deps.test ++
-      Deps.circe
+        Deps.circe
   )

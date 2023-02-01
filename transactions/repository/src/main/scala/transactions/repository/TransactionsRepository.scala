@@ -17,5 +17,7 @@ trait TransactionsRepository {
 
   def delete(id: UUID): ZIO[Connection, ApiError, Int]
 
-  def list(spec: TransactionListingSpec): ZIO[Connection, ApiError, List[Transaction]]
+  def list(
+      spec: TransactionListingSpec
+  ): ZIO[Connection, ApiError, List[Transaction]]
 }

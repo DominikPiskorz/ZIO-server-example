@@ -10,10 +10,9 @@ import zio._
 
 object Configuration {
   lazy val load: Task[ApiSettings] =
-    ZIO.fromTry(
-      Try {
-        ConfigSource.file("/opt/docker/etc/api.conf").loadOrThrow[ApiSettings]
-      })
+    ZIO.fromTry(Try {
+      ConfigSource.file("/opt/docker/etc/api.conf").loadOrThrow[ApiSettings]
+    })
 
   val db: TaskLayer[DbConfig] =
     ZLayer.fromZIO(load.map(_.db))

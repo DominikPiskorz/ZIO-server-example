@@ -55,16 +55,20 @@ class PostresTransactionsRepository extends TransactionsRepository {
   def delete(id: UUID): ZIO[Connection, ApiError, Int] =
     tzio {
       sql"""DELETE FROM transactions WHERE id = ${id}"""
-        .updateWithLogHandler(LogHandler.jdkLogHandler).run
+        .updateWithLogHandler(LogHandler.jdkLogHandler)
+        .run
     }.mapDbError("Delete transaction")
 
-  def list(spec: TransactionListingSpec): ZIO[Connection, ApiError, List[Transaction]] =
+  def list(
+      spec: TransactionListingSpec
+  ): ZIO[Connection, ApiError, List[Transaction]] =
     tzio {
-      Fragment.const(
-        s"""SELECT * FROM transactions
+      Fragment
+        .const(
+          s"""SELECT * FROM transactions
         ORDER BY ${spec.sortBy.toSqlField} ${spec.ascSql}
         LIMIT ${spec.limit} OFFSET ${spec.offset}"""
-      )
+        )
         .queryWithLogHandler[Transaction](LogHandler.jdkLogHandler)
         .to[List]
     }.mapDbError("List transactions")

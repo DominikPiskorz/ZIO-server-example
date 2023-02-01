@@ -9,11 +9,11 @@ import sttp.tapir.server.http4s.ztapir.ZHttp4sServerInterpreter
 
 final case class Routes(
     generic: GenericRoutes,
-    transactions:    TransactionsRoutes
+    transactions: TransactionsRoutes
 ) {
   val allEndpoints =
     generic.endpoints ++
-    transactions.endpoints
+      transactions.endpoints
 
   val docRoutes = ApiDocRoutes.forEndpoints(allEndpoints)
 

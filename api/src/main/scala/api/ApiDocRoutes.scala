@@ -8,7 +8,10 @@ import zio.RIO
 
 object ApiDocRoutes {
   def forEndpoints(endpoints: List[ZServerEndpoint[Database, Any]]) =
-    ZHttp4sServerInterpreter().from(
-      SwaggerInterpreter().fromServerEndpoints(endpoints, "ZIO Api Server", "1.0")
-    ).toRoutes
+    ZHttp4sServerInterpreter()
+      .from(
+        SwaggerInterpreter()
+          .fromServerEndpoints(endpoints, "ZIO Api Server", "1.0")
+      )
+      .toRoutes
 }

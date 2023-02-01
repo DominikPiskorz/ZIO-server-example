@@ -8,8 +8,8 @@ import io.github.gaelrenoux.tranzactio.doobie.Database
 import zio._
 
 object Environment {
-  /**
-    * Constructs layer with environment needed to run api server.
+
+  /** Constructs layer with environment needed to run api server.
     */
   def live: TaskLayer[RunEnvironment] =
     routes ++ Configuration.server ++ database
@@ -20,7 +20,7 @@ object Environment {
   val generic: ULayer[GenericRoutes] = ZLayer.succeed(GenericRoutes())
 
   val transactions: TaskLayer[TransactionsRoutes] =
-      PostresTransactionsRepository.live >>>
+    PostresTransactionsRepository.live >>>
       LiveTransactionsHandler.layer >>>
       TransactionsRoutes.layer
 

@@ -18,5 +18,5 @@ final case class Transaction(
 )
 
 object Transaction {
-    implicit val codec: Codec[Transaction] = deriveCodec
+  implicit val codec: Codec[Transaction] = deriveCodec
 }

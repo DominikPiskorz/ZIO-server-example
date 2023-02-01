@@ -29,7 +29,9 @@ object ApiServer extends ZIOAppDefault {
       executor <- ZIO.executor
       routes <- Routes.allRoutes
       settings <- ZIO.service[ApiSettings]
-      _ <- ZIO.logInfo(s"Starting api server on host: ${settings.host} port: ${settings.port}")
+      _ <- ZIO.logInfo(
+        s"Starting api server on host: ${settings.host} port: ${settings.port}"
+      )
       res <- serve(executor, routes, settings)
     } yield res
 

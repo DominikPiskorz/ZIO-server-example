@@ -61,11 +61,12 @@ object TransactionListingSortField {
   }
 
   def fromString(s: String): Task[TransactionListingSortField] = s match {
-      case "bookedAt"  => ZIO.succeed(BookedAt)
-      case "title"     => ZIO.succeed(Title)
-      case "amount"    => ZIO.succeed(Amount)
-      case "currency"  => ZIO.succeed(Currency)
-      case "direction" => ZIO.succeed(Direction)
-      case other       => ZIO.fail(new IllegalArgumentException(s"Invalid sort: $other"))
+    case "bookedAt"  => ZIO.succeed(BookedAt)
+    case "title"     => ZIO.succeed(Title)
+    case "amount"    => ZIO.succeed(Amount)
+    case "currency"  => ZIO.succeed(Currency)
+    case "direction" => ZIO.succeed(Direction)
+    case other =>
+      ZIO.fail(new IllegalArgumentException(s"Invalid sort: $other"))
   }
 }

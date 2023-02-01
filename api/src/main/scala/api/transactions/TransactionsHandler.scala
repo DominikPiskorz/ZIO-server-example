@@ -21,7 +21,9 @@ trait TransactionsHandler {
       request: TransactionWriteRequest
   ): ZIO[Database, ApiError, Unit]
 
-  def list(spec: TransactionListingSpec): ZIO[Database, ApiError, List[Transaction]]
+  def list(
+      spec: TransactionListingSpec
+  ): ZIO[Database, ApiError, List[Transaction]]
 
   def delete(id: UUID): ZIO[Database, ApiError, Unit]
 }
@@ -71,7 +73,9 @@ class LiveTransactionsHandler(
       } yield ()
     }
 
-  def list(spec: TransactionListingSpec): ZIO[Database, ApiError, List[Transaction]] =
+  def list(
+      spec: TransactionListingSpec
+  ): ZIO[Database, ApiError, List[Transaction]] =
     dbTransaction("List transactions") {
       for {
         _ <- ZIO.logInfo(s"Listing transactions")
