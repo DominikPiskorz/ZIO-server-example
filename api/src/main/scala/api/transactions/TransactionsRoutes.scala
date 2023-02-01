@@ -49,7 +49,36 @@ implicit lazy val sWriteRequest: Schema[TransactionWriteRequest] = Schema.derive
         handler.create(request)
       }
 
-  val endpoints = List(getById, create)
+  private val update: ZServerEndpoint[Database, Any] =
+    transactionsEndpoint.put
+      .in(path[UUID]("id"))
+      .in(jsonBody[TransactionWriteRequest])
+      .errorOut(errors)
+      .out(statusCode(StatusCode.Ok))
+      .zServerLogic { case (id, request) =>
+        handler.update(id, request)
+      }
+
+  private val list: ZServerEndpoint[Database, Any] =
+    transactionsEndpoint
+      .get
+      .errorOut(errors)
+      .out(jsonBody[List[Transaction]])
+      .out(statusCode(StatusCode.Ok))
+      .zServerLogic { _ =>
+        handler.list()
+      }
+
+  private val delete: ZServerEndpoint[Database, Any] =
+    transactionsEndpoint.delete
+      .in(path[UUID]("id"))
+      .errorOut(errors)
+      .out(statusCode(StatusCode.Ok))
+      .zServerLogic { id =>
+        handler.delete(id)
+      }
+
+  val endpoints = List(getById, create, update, list, delete)
   val routes = ZHttp4sServerInterpreter().from(endpoints).toRoutes
 }
 

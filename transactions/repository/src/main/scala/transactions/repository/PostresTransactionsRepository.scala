@@ -37,6 +37,33 @@ class PostresTransactionsRepository extends TransactionsRepository {
       )
     """.updateWithLogHandler(LogHandler.jdkLogHandler).run
     }.mapDbError("Create transaction").unit
+
+  def update(transaction: Transaction): ZIO[Connection, ApiError, Int] =
+    tzio {
+      sql"""
+      UPDATE transactions SET
+        owner = ${transaction.owner},
+        direction = ${transaction.direction},
+        amount = ${transaction.amount}, 
+        currency = ${transaction.currency},
+        booked_at = ${transaction.bookedAt},
+        title = ${transaction.title}
+      WHERE id = ${transaction.id}
+    """.updateWithLogHandler(LogHandler.jdkLogHandler).run
+    }.mapDbError("Update transaction")
+
+  def list(): ZIO[Connection, ApiError, List[Transaction]] =
+    tzio {
+      sql"""SELECT * FROM transactions ORDER BY booked_at"""
+        .queryWithLogHandler[Transaction](LogHandler.jdkLogHandler)
+        .to[List]
+    }.mapDbError("List transactions")
+
+  def delete(id: UUID): ZIO[Connection, ApiError, Int] =
+    tzio {
+      sql"""DELETE FROM transactions WHERE id = ${id}"""
+        .updateWithLogHandler(LogHandler.jdkLogHandler).run
+    }.mapDbError("Delete transaction")
 }
 
 object PostresTransactionsRepository {

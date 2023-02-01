@@ -15,6 +15,15 @@ trait TransactionsHandler {
   def create(
       request: TransactionWriteRequest
   ): ZIO[Database, ApiError, Transaction]
+
+  def update(
+      id: UUID,
+      request: TransactionWriteRequest
+  ): ZIO[Database, ApiError, Unit]
+
+  def list(): ZIO[Database, ApiError, List[Transaction]]
+
+  def delete(id: UUID): ZIO[Database, ApiError, Unit]
 }
 
 class LiveTransactionsHandler(
@@ -44,6 +53,43 @@ class LiveTransactionsHandler(
         _ <- repository.create(model)
         _ <- ZIO.logInfo("Transaction successfully created")
       } yield model
+    }
+
+  def update(
+      id: UUID,
+      request: TransactionWriteRequest
+  ): ZIO[Database, ApiError, Unit] =
+    dbTransaction("Update transaction") {
+      for {
+        _ <- ZIO.logInfo(s"Updating transaction $id")
+        model = request.toModel(id)
+        updated <- repository.update(model)
+        _ <-
+          if (updated == 1) ZIO.unit
+          else ZIO.fail(TransactionsError.NotFound(id))
+        _ <- ZIO.logInfo(s"Transaction $id successfully updated")
+      } yield ()
+    }
+
+  def list(): ZIO[Database, ApiError, List[Transaction]] =
+    dbTransaction("List transactions") {
+      for {
+        _ <- ZIO.logInfo(s"Listing transactions")
+        result <- repository.list()
+        _ <- ZIO.logInfo(s"Found ${result.length} transactions")
+      } yield result
+    }
+
+  def delete(id: UUID): ZIO[Database, ApiError, Unit] =
+    dbTransaction("Delete transaction") {
+      for {
+        _ <- ZIO.logInfo(s"Deleting transaction $id")
+        deleted <- repository.delete(id)
+        _ <-
+          if (deleted == 1) ZIO.unit
+          else ZIO.fail(TransactionsError.NotFound(id))
+        _ <- ZIO.logInfo(s"Deleted transaction $id")
+      } yield ()
     }
 }
 
