@@ -37,11 +37,11 @@ class TransactionsHandlerTest extends AnyFunSuite with MockFactory {
       () => id
     )
 
+    val effect = handler.create(request).provideLayer(Database.none)
+
     val result = Unsafe.unsafe { implicit unsafe =>
       runtime.unsafe
-        .run(
-          handler.create(request).provideLayer(Database.none)
-        )
+        .run(effect)
         .getOrThrowFiberFailure()
     }
 
