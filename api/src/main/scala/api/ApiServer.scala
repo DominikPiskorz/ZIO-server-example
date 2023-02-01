@@ -21,7 +21,7 @@ object ApiServer extends ZIOAppDefault {
     )
 
   def run =
-    server.provide(Environment.live)
+    server.provide(Environment.live).exitCode
 
   // Starting the server
   val server: ZIO[RunEnvironment, Throwable, Unit] =
