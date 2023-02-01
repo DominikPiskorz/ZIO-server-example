@@ -4,7 +4,7 @@ import java.util.UUID
 
 import errors.ApiError
 import transactions.model._
-import transactions.repository.TransactionsRepository
+import transactions.repository.{TransactionsRepository, TransactionListingSpec}
 
 import io.github.gaelrenoux.tranzactio.doobie._
 import zio._
@@ -21,7 +21,7 @@ trait TransactionsHandler {
       request: TransactionWriteRequest
   ): ZIO[Database, ApiError, Unit]
 
-  def list(): ZIO[Database, ApiError, List[Transaction]]
+  def list(spec: TransactionListingSpec): ZIO[Database, ApiError, List[Transaction]]
 
   def delete(id: UUID): ZIO[Database, ApiError, Unit]
 }
@@ -71,11 +71,11 @@ class LiveTransactionsHandler(
       } yield ()
     }
 
-  def list(): ZIO[Database, ApiError, List[Transaction]] =
+  def list(spec: TransactionListingSpec): ZIO[Database, ApiError, List[Transaction]] =
     dbTransaction("List transactions") {
       for {
         _ <- ZIO.logInfo(s"Listing transactions")
-        result <- repository.list()
+        result <- repository.list(spec)
         _ <- ZIO.logInfo(s"Found ${result.length} transactions")
       } yield result
     }

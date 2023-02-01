@@ -6,7 +6,14 @@ import java.util.UUID
 import api.TapirUtils._
 import errors.ApiError
 import transactions.model._
+import transactions.repository.{
+  TransactionListingSpec,
+  TransactionListingSortField
+}
 
+import cats.instances.option._
+import cats.implicits._
+import zio.interop.catz._
 import io.github.gaelrenoux.tranzactio.doobie.Database
 import sttp.model.StatusCode
 import sttp.tapir.server.http4s.ztapir.ZHttp4sServerInterpreter
@@ -20,12 +27,16 @@ class TransactionsRoutes(
   private val transactionsEndpoint: PublicEndpoint[Unit, Unit, Unit, Any] =
     endpoint.in("transactions")
 
-implicit lazy val sTransaction: Schema[Transaction] = Schema.derived
-implicit lazy val sWriteRequest: Schema[TransactionWriteRequest] = Schema.derived
+  implicit lazy val sTransaction: Schema[Transaction] = Schema.derived
+  implicit lazy val sWriteRequest: Schema[TransactionWriteRequest] =
+    Schema.derived
 
   private val errors =
     oneOf[ApiError](
-      oneOfVariant(statusCode(StatusCode.NotFound).and(jsonBody[TransactionsError.NotFound].description("not found"))),
+      oneOfVariant(
+        statusCode(StatusCode.NotFound)
+          .and(jsonBody[TransactionsError.NotFound].description("not found"))
+      ),
       oneOfDefaultVariant(jsonBody[ApiError.Generic].description("unknown"))
     )
 
@@ -60,13 +71,25 @@ implicit lazy val sWriteRequest: Schema[TransactionWriteRequest] = Schema.derive
       }
 
   private val list: ZServerEndpoint[Database, Any] =
-    transactionsEndpoint
-      .get
+    transactionsEndpoint.get
+      .in(query[Option[Int]]("limit"))
+      .in(query[Option[Int]]("page"))
+      .in(query[Option[String]]("sortBy"))
+      .in(query[Option[Boolean]]("asc"))
       .errorOut(errors)
       .out(jsonBody[List[Transaction]])
       .out(statusCode(StatusCode.Ok))
-      .zServerLogic { _ =>
-        handler.list()
+      .out(header[Int]("X-limit"))
+      .out(header[Int]("X-page"))
+      .zServerLogic { case (limit, page, sortByString, asc) =>
+        for {
+          sortBy <- sortByString
+            .map(TransactionListingSortField.fromString)
+            .sequence
+            .mapError(e => ApiError.Generic(e.getMessage()))
+          spec = TransactionListingSpec.fromOptionals(limit, page, sortBy, asc)
+          result <- handler.list(spec)
+        } yield (result, spec.limit, spec.page)
       }
 
   private val delete: ZServerEndpoint[Database, Any] =
@@ -85,9 +108,8 @@ implicit lazy val sWriteRequest: Schema[TransactionWriteRequest] = Schema.derive
 object TransactionsRoutes {
   val layer: URLayer[TransactionsHandler, TransactionsRoutes] =
     ZLayer {
-        for {
-            handler <- ZIO.service[TransactionsHandler]
-        }
-        yield new TransactionsRoutes(handler)
+      for {
+        handler <- ZIO.service[TransactionsHandler]
+      } yield new TransactionsRoutes(handler)
     }
 }

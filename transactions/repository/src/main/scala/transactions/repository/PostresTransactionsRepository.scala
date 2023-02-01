@@ -5,7 +5,7 @@ import java.util.UUID
 import errors.ApiError
 import transactions.model._
 
-import doobie.LogHandler
+import doobie.{Fragment, LogHandler}
 import doobie.implicits._
 import doobie.implicits.legacy.instant._
 import doobie.postgres.implicits.{JavaTimeLocalDateTimeMeta, UuidType}
@@ -52,18 +52,22 @@ class PostresTransactionsRepository extends TransactionsRepository {
     """.updateWithLogHandler(LogHandler.jdkLogHandler).run
     }.mapDbError("Update transaction")
 
-  def list(): ZIO[Connection, ApiError, List[Transaction]] =
-    tzio {
-      sql"""SELECT * FROM transactions ORDER BY booked_at"""
-        .queryWithLogHandler[Transaction](LogHandler.jdkLogHandler)
-        .to[List]
-    }.mapDbError("List transactions")
-
   def delete(id: UUID): ZIO[Connection, ApiError, Int] =
     tzio {
       sql"""DELETE FROM transactions WHERE id = ${id}"""
         .updateWithLogHandler(LogHandler.jdkLogHandler).run
     }.mapDbError("Delete transaction")
+
+  def list(spec: TransactionListingSpec): ZIO[Connection, ApiError, List[Transaction]] =
+    tzio {
+      Fragment.const(
+        s"""SELECT * FROM transactions
+        ORDER BY ${spec.sortBy.toSqlField} ${spec.ascSql}
+        LIMIT ${spec.limit} OFFSET ${spec.offset}"""
+      )
+        .queryWithLogHandler[Transaction](LogHandler.jdkLogHandler)
+        .to[List]
+    }.mapDbError("List transactions")
 }
 
 object PostresTransactionsRepository {
