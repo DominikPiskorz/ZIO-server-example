@@ -21,7 +21,7 @@ object ApiServer extends ZIOAppDefault {
     )
 
   def run =
-    server.provide(Environment.live).exitCode
+    server.provide(Environment.live)
 
   // Starting the server
   val server: ZIO[RunEnvironment, Throwable, Unit] =
@@ -29,7 +29,7 @@ object ApiServer extends ZIOAppDefault {
       executor <- ZIO.executor
       routes <- Routes.allRoutes
       settings <- ZIO.service[ApiSettings]
-      _ <- ZIO.logInfo(s"Starting api server on port: ${settings.port}")
+      _ <- ZIO.logInfo(s"Starting api server on host: ${settings.host} port: ${settings.port}")
       res <- serve(executor, routes, settings)
     } yield res
 

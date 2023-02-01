@@ -1,24 +1,19 @@
 package api
 
+import scala.util.Try
+
 import common.database.DbConfig
 
+import pureconfig._
+import pureconfig.generic.auto._
 import zio._
 
 object Configuration {
-  // TODO use pureconfig or something similar
   lazy val load: Task[ApiSettings] =
-    ZIO.succeed(
-      ApiSettings(
-        host = "0.0.0.0",
-        port = 8080,
-        db = DbConfig(
-          "org.postgresql.Driver",
-          "jdbc:postgresql://postgres:5432/db_user",
-          "db_user",// getEnvVar("DB_USERNAME"),
-          "db_password"// getEnvVar("DB_PASSWORD")
-        )
-      )
-    )
+    ZIO.fromTry(
+      Try {
+        ConfigSource.file("/opt/docker/etc/api.conf").loadOrThrow[ApiSettings]
+      })
 
   val db: TaskLayer[DbConfig] =
     ZLayer.fromZIO(load.map(_.db))

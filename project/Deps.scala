@@ -10,6 +10,7 @@ object Deps {
   private val tapirVer = "1.2.7"
   private val http4sVersion = "0.23.13"
   private val zioLoggingVer = "2.1.8"
+  private val pureconfigVer = "0.17.2"
 
   val test = Seq("org.scalatest" %% "scalatest" % scalaTestVer % Test)
 
@@ -48,5 +49,9 @@ object Deps {
   val log = Seq(
       "dev.zio" %% "zio-logging" % zioLoggingVer,
       "dev.zio" %% "zio-logging-slf4j-bridge" % zioLoggingVer
+  )
+
+  val config = Seq(
+    "com.github.pureconfig" %% "pureconfig" % pureconfigVer
   )
 }
