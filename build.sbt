@@ -1,4 +1,7 @@
 ThisBuild / scalaVersion := "2.13.10"
+ThisBuild / semanticdbEnabled := true
+ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
+ThisBuild / scalacOptions += "-Ywarn-unused"
 
 lazy val root = (project in file("."))
   .aggregate(

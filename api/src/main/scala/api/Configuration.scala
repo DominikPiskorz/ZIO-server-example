@@ -20,5 +20,4 @@ object Configuration {
   val server: TaskLayer[ApiSettings] =
     ZLayer.fromZIO(load)
 
-  private def getEnvVar(key: String): String = sys.env.get(key).get
 }

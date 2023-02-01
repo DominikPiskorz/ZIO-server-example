@@ -1,14 +1,10 @@
 package api
 
 import cats.syntax.all._
-import cats._
-import cats.syntax._
 import io.github.gaelrenoux.tranzactio.doobie.Database
 import org.http4s._
 import org.http4s.server.Router
 import org.http4s.blaze.server.BlazeServerBuilder
-import sttp.tapir.server.http4s.ztapir.ZHttp4sServerInterpreter
-import sttp.tapir.ztapir._
 import zio.interop.catz._
 import zio._
 import zio.logging.{console => zioConsole, _}

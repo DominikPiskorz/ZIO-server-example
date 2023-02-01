@@ -32,7 +32,6 @@ class LiveTransactionsHandler(
     repository: TransactionsRepository,
     generateUUID: () => UUID = UUID.randomUUID
 ) extends TransactionsHandler {
-  import Direction._
   import api.DatabaseTransaction._
 
   def get(id: UUID): ZIO[Database, ApiError, Transaction] =

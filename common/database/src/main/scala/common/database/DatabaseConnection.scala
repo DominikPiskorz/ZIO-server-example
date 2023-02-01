@@ -2,7 +2,7 @@ package common.database
 
 import io.github.gaelrenoux.tranzactio.doobie.Database
 import javax.sql.DataSource
-import zio.{RLayer, ULayer, ZLayer, ZIO}
+import zio.{RLayer, ZLayer, ZIO}
 
 object DatabaseConnection {
   def run() = println("DB running")

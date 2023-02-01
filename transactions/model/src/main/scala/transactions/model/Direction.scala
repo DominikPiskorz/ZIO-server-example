@@ -1,6 +1,6 @@
 package transactions.model
 
-import io.circe.Codec, io.circe.generic.semiauto.deriveCodec
+import io.circe.Codec
 
 object Direction extends Enumeration {
   type Direction = Value

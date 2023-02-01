@@ -1,6 +1,5 @@
 package api.transactions
 
-import java.time.LocalDateTime
 import java.util.UUID
 
 import api.TapirUtils._
@@ -11,7 +10,6 @@ import transactions.repository.{
   TransactionListingSortField
 }
 
-import cats.instances.option._
 import cats.implicits._
 import zio.interop.catz._
 import io.github.gaelrenoux.tranzactio.doobie.Database

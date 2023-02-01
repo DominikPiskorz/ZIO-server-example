@@ -11,7 +11,7 @@ final case class GenericRoutes() {
     endpoint
       .in("status")
       .get
-      .zServerLogic { id =>
+      .zServerLogic { _ =>
         ZIO.succeed(())
       }
 

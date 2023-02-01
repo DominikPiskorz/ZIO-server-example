@@ -7,7 +7,6 @@ import transactions.model._
 
 import doobie.{Fragment, LogHandler}
 import doobie.implicits._
-import doobie.implicits.legacy.instant._
 import doobie.postgres.implicits.{JavaTimeLocalDateTimeMeta, UuidType}
 import doobie.util.{Get, Put, Read}
 import io.github.gaelrenoux.tranzactio._
