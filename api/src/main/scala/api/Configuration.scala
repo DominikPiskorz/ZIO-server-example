@@ -13,7 +13,7 @@ object Configuration {
         port = 8080,
         db = DbConfig(
           "org.postgresql.Driver",
-          "jdbc:postgresql://0.0.0.0:5432/db_user",
+          "jdbc:postgresql://postgres:5432/db_user",
           "db_user",// getEnvVar("DB_USERNAME"),
           "db_password"// getEnvVar("DB_PASSWORD")
         )

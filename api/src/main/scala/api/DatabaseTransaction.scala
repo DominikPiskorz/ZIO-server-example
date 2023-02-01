@@ -16,5 +16,5 @@ object DatabaseTransaction {
   }
 
   def dbTransaction[T](action: String)(op: ZIO[Connection, ApiError, T]): ZIO[Database, ApiError, T] =
-      Database.transaction(op).mapDbError(action)
+      Database.transaction(op).mapDbError(action).logError("Error during db transaction")
 }

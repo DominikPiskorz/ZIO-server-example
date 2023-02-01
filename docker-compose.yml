@@ -20,3 +20,17 @@ services:
     command: -url=jdbc:postgresql://postgres:5432/${POSTGRES_USER:-db_user} -user=${POSTGRES_USER:-db_user} -password=${POSTGRES_PASSWORD:-db_password} -connectRetries=60 migrate
     volumes:
       - "./migrations/:/flyway/sql"
+
+  zio-api:
+    depends_on:
+      postgres:
+        condition: service_started
+      postgres_migrator:
+        condition: service_completed_successfully
+    image: 'zio-api:latest'
+    ports:
+      - "8080:8080"
+
+networks:
+  default:
+    name: zio-api-network

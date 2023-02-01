@@ -12,6 +12,8 @@ abstract class ApiError(
     val meta:       Map[String, String] = Map.empty
 ) extends Throwable {
   val logMessage: String = userMessage
+
+  override def getMessage(): String = logMessage
 }
 
 object ApiError {
@@ -26,7 +28,7 @@ object ApiError {
   ) extends ApiError(
     userMessage
   ) {
-    override val logMessage = s"Database error when performing action: $actionDesc"
+    override val logMessage = s"Database error when performing action '$actionDesc': ${error.getMessage()}"
   }
 
   implicit def jsonDecoder[E <: ApiError]: Decoder[E] =
