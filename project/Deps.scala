@@ -2,6 +2,7 @@ import sbt._
 
 object Deps {
   private val scalaTestVer = "3.2.7"
+  private val scalaMockVer = "5.1.0"
   private val zioVer = "2.0.6"
   private val catsVer = "2.9.0"
   private val zioCatsVer = "23.0.0.1"
@@ -12,7 +13,10 @@ object Deps {
   private val zioLoggingVer = "2.1.8"
   private val pureconfigVer = "0.17.2"
 
-  val test = Seq("org.scalatest" %% "scalatest" % scalaTestVer % Test)
+  val test = Seq(
+    "org.scalatest" %% "scalatest" % scalaTestVer % Test,
+    "org.scalamock" %% "scalamock" % scalaMockVer % Test
+  )
 
   val circe = Seq(
     "io.circe" %% "circe-core" % circeVer,
