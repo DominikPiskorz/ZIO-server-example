@@ -40,6 +40,7 @@ class TransactionsRoutes(
 
   private val getById: ZServerEndpoint[Database, Any] =
     transactionsEndpoint.get
+      .summary("Fetch transaction by id")
       .in(path[UUID]("id"))
       .errorOut(errors)
       .out(jsonBody[Transaction])
@@ -50,6 +51,7 @@ class TransactionsRoutes(
 
   private val create: ZServerEndpoint[Database, Any] =
     transactionsEndpoint.put
+      .summary("Create new transaction")
       .in(jsonBody[TransactionWriteRequest])
       .errorOut(errors)
       .out(jsonBody[Transaction])
@@ -60,6 +62,7 @@ class TransactionsRoutes(
 
   private val update: ZServerEndpoint[Database, Any] =
     transactionsEndpoint.put
+      .summary("Update existing transaction")
       .in(path[UUID]("id"))
       .in(jsonBody[TransactionWriteRequest])
       .errorOut(errors)
@@ -70,6 +73,7 @@ class TransactionsRoutes(
 
   private val list: ZServerEndpoint[Database, Any] =
     transactionsEndpoint.get
+      .summary("List transactions with paging")
       .in(query[Option[Int]]("limit"))
       .in(query[Option[Int]]("page"))
       .in(query[Option[String]]("sortBy"))
@@ -92,6 +96,7 @@ class TransactionsRoutes(
 
   private val delete: ZServerEndpoint[Database, Any] =
     transactionsEndpoint.delete
+      .summary("Delete transaction")
       .in(path[UUID]("id"))
       .errorOut(errors)
       .out(statusCode(StatusCode.Ok))
